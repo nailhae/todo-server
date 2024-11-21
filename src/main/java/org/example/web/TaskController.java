@@ -6,7 +6,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.constants.TaskStatus;
 import org.example.model.Task;
 import org.example.service.TaskService;
+import org.example.web.vo.ResultResponse;
 import org.example.web.vo.TaskRequest;
+import org.example.web.vo.TaskStatusRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -75,5 +77,56 @@ public class TaskController {
 	public ResponseEntity<List<Task>> getByStatus(@PathVariable TaskStatus status) {
 		List<Task> result = taskService.getByStatus(status);
 		return ResponseEntity.ok(result);
+	}
+
+	/**
+	 * 특정 ID에 해당하는 할일을 수정
+	 *
+	 * @param id   할일 ID
+	 * @param task 수정할 할 일 정보
+	 * @return 수정된 할 일 객체
+	 */
+	@PutMapping("{/id}")
+	public ResponseEntity<Task> updateTask(@PathVariable Long id,
+	                                       @RequestBody TaskRequest task) {
+		Task result = taskService.update(id,
+				task.getTitle(),
+				task.getDescription(),
+				task.getDueDate());
+
+		return ResponseEntity.ok(result);
+	}
+
+
+	/**
+	 * 특정 ID에 해당하는 할 일의 상태를 수정
+	 *
+	 * @param id  할 일 ID
+	 * @param req 수정할 할 일 상태 정보
+	 * @return 수정된 할 일 객체
+	 */
+	@PutMapping("/{id}/status")
+	public ResponseEntity<Task> updateTaskStatus(@PathVariable Long id,
+	                                             @RequestBody TaskStatusRequest req) {
+		Task result = taskService.updateStatus(id, req.getStatus());
+		return ResponseEntity.ok(result);
+	}
+
+	/**
+	 * 특정 ID에 해당하는 할 일을 삭제
+	 *
+	 * @param id 삭제할 할 일 ID
+	 * @return 삭제 결과를 담은 응답 객체
+	 */
+	@DeleteMapping("/{id}")
+	public ResponseEntity<ResultResponse> deleteTask(@PathVariable Long id) {
+		boolean result = taskService.delete(id);
+		return ResponseEntity.ok(new ResultResponse(result));
+	}
+
+	@GetMapping("/status")
+	public ResponseEntity<TaskStatus[]> getAllStatus() {
+		TaskStatus[] status = TaskStatus.values();
+		return ResponseEntity.ok(status);
 	}
 }
