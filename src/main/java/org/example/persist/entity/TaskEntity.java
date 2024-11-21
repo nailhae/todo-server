@@ -6,6 +6,7 @@ import org.example.constants.TaskStatus;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -36,9 +37,9 @@ public class TaskEntity {
 
 	@CreationTimestamp
 	@Column(insertable = false, updatable = false)
-	private Timestamp createAt;
+	private Timestamp createdAt;
 
-	@CreationTimestamp
+	@UpdateTimestamp
 	@Column(insertable = false, updatable = false)
 	private Timestamp updatedAt;
 
